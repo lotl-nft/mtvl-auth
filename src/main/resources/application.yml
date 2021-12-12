@@ -8,7 +8,10 @@ smallrye:
         location: privateKey.pem
 quarkus:
   http:
-    port: 8080
+    port: ${PORT:8080}
+  mongodb:
+    connection-string: mongodb+srv://lotl:ITMMkQMxFwBTNnPl@cluster0.uvg2i.mongodb.net/lotl?retryWrites=true&w=majority
+    database: "lotl"
 #mp:
 #  jwt:
 #    verify:
