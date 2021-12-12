@@ -44,3 +44,6 @@ compileJava {
 compileTestJava {
     options.encoding = 'UTF-8'
 }
+
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
