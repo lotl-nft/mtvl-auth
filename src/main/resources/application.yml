@@ -1,2 +1,22 @@
-greeting:
-  message: "hello"
+auth:
+  issuer: https://metadefi.land
+
+smallrye:
+  jwt:
+    sign:
+      key:
+        location: privateKey.pem
+#mp:
+#  jwt:
+#    verify:
+#      publickey:
+#        location: publicKey.pem
+#      issuer: https://metadefi.land
+
+"%dev":
+  quarkus:
+    mongodb:
+      connection-string: mongodb+srv://lotl:ITMMkQMxFwBTNnPl@cluster0.uvg2i.mongodb.net/lotl?retryWrites=true&w=majority
+      database: "lotl"
+    http:
+      port: 8000

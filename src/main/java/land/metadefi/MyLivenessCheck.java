@@ -1,4 +1,4 @@
-package land.mtvl;
+package land.metadefi;
 
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
