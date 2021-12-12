@@ -1,11 +1,14 @@
 auth:
   issuer: https://metadefi.land
-
 smallrye:
   jwt:
+    time-to-live: 3600
     sign:
       key:
         location: privateKey.pem
+quarkus:
+  http:
+    port: 8080
 #mp:
 #  jwt:
 #    verify:
@@ -14,6 +17,9 @@ smallrye:
 #      issuer: https://metadefi.land
 
 "%dev":
+  smallrye:
+    jwt:
+      time-to-live: 84600
   quarkus:
     mongodb:
       connection-string: mongodb+srv://lotl:ITMMkQMxFwBTNnPl@cluster0.uvg2i.mongodb.net/lotl?retryWrites=true&w=majority
