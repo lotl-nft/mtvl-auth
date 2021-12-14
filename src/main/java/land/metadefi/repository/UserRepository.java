@@ -23,28 +23,33 @@ public class UserRepository implements PanacheMongoRepository<UserEntity> {
 
     public Auth authWithPassword(String username, String password) {
         UserEntity userEntity = find("username", username).firstResult();
-        if(!validateUser(userEntity))
+        if(Objects.isNull(userEntity))
+            return new Auth();
+        if(!isActive(userEntity))
             return new Auth();
         if(!BCrypt.checkpw(password, userEntity.getPassword()))
             return new Auth();
         return generateAuthResource(userEntity);
     }
 
-    public Auth authWithMetamaskToken(String token) {
-        String contractAddress = AuthUtils.getContractAddressFromMetamask(token);
-        UserEntity userEntity = find("contractAddress", contractAddress).firstResult();
-        // TODO: if user does not have account, create for them!
-        if(!validateUser(userEntity))
+    public Auth authWithMetamaskSignature(String address, String message, String signature) {
+        if(!AuthUtils.validateAddressFromMetamask(address, message, signature))
+            return new Auth();
+
+        UserEntity userEntity = find("contractAddress", address).firstResult();
+        if(Objects.isNull(userEntity)) {
+            userEntity = new UserEntity();
+            userEntity.setContractAddress(address);
+            userEntity.setStatus(UserStatus.ACTIVE.getStatus());
+            persist(userEntity);
+        }
+        if(!isActive(userEntity))
             return new Auth();
         return generateAuthResource(userEntity);
     }
 
-    private boolean validateUser(UserEntity userEntity) {
-        if(Objects.isNull(userEntity))
-            return false;
-        if(userEntity.getStatus() != UserStatus.ACTIVE.getStatus())
-            return false;
-        return true;
+    private boolean isActive(UserEntity userEntity) {
+        return Objects.equals(userEntity.getStatus(), UserStatus.ACTIVE.getStatus());
     }
 
     private Auth generateAuthResource(UserEntity userEntity) {

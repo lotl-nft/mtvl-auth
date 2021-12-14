@@ -10,11 +10,18 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 
+
 public class AuthUtils {
+
+    private AuthUtils() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static String generateJwtToken(AuthConfig config, UserEntity userEntity) {
         return Jwt.issuer(config.issuer())
-                .upn(Optional.ofNullable(userEntity.getUsername()).orElse(""))
+                .audience(Optional.of(userEntity.getId().toString()).orElse(""))
+                .upn(Optional.ofNullable(userEntity.getEmail()).orElse(""))
+                .preferredUserName(Optional.ofNullable(userEntity.getUsername()).orElse(""))
                 .groups(new HashSet<>(Arrays.asList("User", "Admin")))
                 .claim(Claims.address.name(), Optional.ofNullable(userEntity.getContractAddress()).orElse(""))
                 .sign();
@@ -24,8 +31,8 @@ public class AuthUtils {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    public static String getContractAddressFromMetamask(String token) {
-        return "";
+    public static boolean validateAddressFromMetamask(String address, String message, String signature) {
+        return address.equals(Web3Utils.recoverAddressFromSignature(address, message, signature));
     }
 
 }

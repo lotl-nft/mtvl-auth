@@ -22,7 +22,7 @@ public class AuthResource {
 
     @Query("loginWithMetamask")
     @Description("Login with Metamask token")
-    public Auth loginWithMetamask(String token) {
-        return repository.authWithMetamaskToken(token);
+    public Auth loginWithMetamask(String address, String message, String signature) {
+        return repository.authWithMetamaskSignature(address, message, signature);
     }
 }

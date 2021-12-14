@@ -12,16 +12,14 @@ import java.sql.Timestamp;
 @MongoEntity(collection="users")
 public class UserEntity {
     ObjectId id;
-
     String username;
-
     String password;
-
-    Integer status;
-
+    String telegramId;
+    String twitter;
+    String discord;
+    String email;
     String contractAddress;
-
+    Integer status;
     Timestamp createdAt;
-
     Timestamp updatedAt;
 }
