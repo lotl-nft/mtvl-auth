@@ -5,7 +5,8 @@ import land.metadefi.repository.UserRepository;
 import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.eclipse.microprofile.graphql.Query;
-import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.Claims;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -17,7 +18,8 @@ public class AuthResource {
     UserRepository repository;
 
     @Inject
-    JsonWebToken jwt;
+    @Claim(standard = Claims.address)
+    String address;
 
     @Query("loginWithPassword")
     @Description("Login and retrieve JWT token")
@@ -34,7 +36,7 @@ public class AuthResource {
     @Query("renewToken")
     @Description("Retrieve the new JWT token using refresh token")
     @RolesAllowed({ "User" })
-    public Auth renewToken(String username, String password) {
-        return repository.authWithPassword(username, password);
+    public Auth renewToken() {
+        return repository.renewToken(address);
     }
 }

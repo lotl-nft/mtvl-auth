@@ -24,6 +24,7 @@ dependencies {
     implementation "org.springframework.security:spring-security-crypto:${springVersion}"
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     implementation "org.web3j:core:${web3jVersion}"
+    implementation "org.apache.commons:commons-lang3:${apacheCommonLangVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
     testImplementation 'io.quarkus:quarkus-junit5'
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"

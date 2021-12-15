@@ -3,17 +3,19 @@ package land.metadefi.repository;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import land.metadefi.AuthConfig;
 import land.metadefi.enumrable.UserStatus;
+import land.metadefi.error.CredentialsInvalidException;
+import land.metadefi.error.UserInactiveException;
 import land.metadefi.model.Auth;
 import land.metadefi.model.UserEntity;
 import land.metadefi.utils.AuthUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @ApplicationScoped
@@ -28,17 +30,17 @@ public class UserRepository implements PanacheMongoRepository<UserEntity> {
     public Auth authWithPassword(String username, String password) {
         UserEntity userEntity = find("username", username).firstResult();
         if(Objects.isNull(userEntity))
-            return new Auth();
-        if(!isActive(userEntity))
-            return new Auth();
+            throw new CredentialsInvalidException();
         if(!BCrypt.checkpw(password, userEntity.getPassword()))
-            return new Auth();
+            throw new CredentialsInvalidException();
+        if(!isActive(userEntity))
+            throw new UserInactiveException();
         return generateAuthResource(userEntity);
     }
 
     public Auth authWithMetamaskSignature(String address, String message, String signature) {
         if(!AuthUtils.validateAddressFromMetamask(address, message, signature))
-            return new Auth();
+            throw new CredentialsInvalidException();
 
         UserEntity userEntity = find("contractAddress", address).firstResult();
         if(Objects.isNull(userEntity)) {
@@ -48,7 +50,18 @@ public class UserRepository implements PanacheMongoRepository<UserEntity> {
             persist(userEntity);
         }
         if(!isActive(userEntity))
-            return new Auth();
+            throw new UserInactiveException();
+        return generateAuthResource(userEntity);
+    }
+    
+    public Auth renewToken(String address) {
+        if(StringUtils.isEmpty(address))
+            throw new CredentialsInvalidException();
+
+        UserEntity userEntity = find("contractAddress", address).firstResult();
+        if(!isActive(userEntity))
+            throw new UserInactiveException();
+
         return generateAuthResource(userEntity);
     }
 
@@ -60,6 +73,8 @@ public class UserRepository implements PanacheMongoRepository<UserEntity> {
         Auth auth = new Auth();
         String token = AuthUtils.generateJwtToken(authConfig, kid, userEntity);
         auth.setJwtToken(token);
+        // TODO: set refresh token
+        auth.setJwtRefreshToken(token);
         return auth;
     }
 }
