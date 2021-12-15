@@ -1,5 +1,6 @@
 package land.metadefi.utils;
 
+import lombok.experimental.UtilityClass;
 import org.web3j.crypto.ECDSASignature;
 import org.web3j.crypto.Hash;
 import org.web3j.crypto.Keys;
@@ -9,11 +10,8 @@ import org.web3j.utils.Numeric;
 import java.math.BigInteger;
 import java.util.Arrays;
 
+@UtilityClass
 public class Web3Utils {
-
-    private Web3Utils() {
-        throw new IllegalStateException("Utility class");
-    }
 
     static final String PERSONAL_MESSAGE_PREFIX = "\u0019Ethereum Signed Message:\n";
 

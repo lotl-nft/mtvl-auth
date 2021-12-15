@@ -3,21 +3,29 @@ auth:
 smallrye:
   jwt:
     time-to-live: 3600
+    token:
+      kid: Metadefi
     sign:
       key:
         location: privateKey.pem
+    encrypt:
+      key:
+        location: publicKey.pem
+mp:
+  jwt:
+    verify:
+      publickey:
+        location: publicKey.pem
+      issuer: https://metadefi.land
+#    decrypt:
+#      key:
+#        location: privateKey.pem
 quarkus:
   http:
     port: ${PORT:8080}
   mongodb:
-    connection-string: mongodb+srv://lotl:ITMMkQMxFwBTNnPl@cluster0.uvg2i.mongodb.net/lotl?retryWrites=true&w=majority
-    database: "lotl"
-#mp:
-#  jwt:
-#    verify:
-#      publickey:
-#        location: publicKey.pem
-#      issuer: https://metadefi.land
+    connection-string: ""
+    database: ""
 
 "%dev":
   smallrye:

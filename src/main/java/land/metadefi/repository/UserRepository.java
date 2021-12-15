@@ -7,6 +7,7 @@ import land.metadefi.model.Auth;
 import land.metadefi.model.UserEntity;
 import land.metadefi.utils.AuthUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -20,6 +21,9 @@ public class UserRepository implements PanacheMongoRepository<UserEntity> {
 
     @Inject
     AuthConfig authConfig;
+
+    @ConfigProperty(name = "smallrye.jwt.token.kid")
+    String kid;
 
     public Auth authWithPassword(String username, String password) {
         UserEntity userEntity = find("username", username).firstResult();
@@ -54,8 +58,7 @@ public class UserRepository implements PanacheMongoRepository<UserEntity> {
 
     private Auth generateAuthResource(UserEntity userEntity) {
         Auth auth = new Auth();
-        String token = AuthUtils.generateJwtToken(authConfig, userEntity);
-        auth.setUsername(Optional.ofNullable(userEntity.getUsername()).orElse(""));
+        String token = AuthUtils.generateJwtToken(authConfig, kid, userEntity);
         auth.setJwtToken(token);
         return auth;
     }
