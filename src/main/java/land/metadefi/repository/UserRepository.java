@@ -6,7 +6,7 @@ import land.metadefi.enumrable.UserStatus;
 import land.metadefi.error.CredentialsInvalidException;
 import land.metadefi.error.UserInactiveException;
 import land.metadefi.model.Auth;
-import land.metadefi.model.UserEntity;
+import land.metadefi.entity.UserEntity;
 import land.metadefi.utils.AuthUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -45,7 +45,7 @@ public class UserRepository implements PanacheMongoRepository<UserEntity> {
         UserEntity userEntity = find("contractAddress", address).firstResult();
         if (Objects.isNull(userEntity)) {
             userEntity = new UserEntity();
-            userEntity.setContractAddress(address);
+            userEntity.setAddress(address);
             userEntity.setStatus(UserStatus.ACTIVE.getStatus());
             persist(userEntity);
         }

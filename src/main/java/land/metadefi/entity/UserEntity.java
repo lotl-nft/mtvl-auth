@@ -1,4 +1,4 @@
-package land.metadefi.model;
+package land.metadefi.entity;
 
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class UserEntity {
     String twitter;
     String discord;
     String email;
-    String contractAddress;
+    String address;
     Integer status;
     Timestamp createdAt;
     Timestamp updatedAt;

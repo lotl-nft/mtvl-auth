@@ -4,7 +4,7 @@ import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
 import land.metadefi.AuthConfig;
 import land.metadefi.enumrable.UserRole;
-import land.metadefi.model.UserEntity;
+import land.metadefi.entity.UserEntity;
 import lombok.experimental.UtilityClass;
 import org.eclipse.microprofile.jwt.Claims;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -35,7 +35,7 @@ public class AuthUtils {
             .upn(Optional.ofNullable(userEntity.getEmail()).orElse(""))
             .preferredUserName(Optional.ofNullable(userEntity.getUsername()).orElse(""))
             .groups(new HashSet<>(List.of(UserRole.USER.getValue())))
-            .claim(Claims.address.name(), Optional.ofNullable(userEntity.getContractAddress()).orElse(""))
+            .claim(Claims.address.name(), Optional.ofNullable(userEntity.getAddress()).orElse(""))
             .claim(Claims.kid.name(), kid);
     }
 
