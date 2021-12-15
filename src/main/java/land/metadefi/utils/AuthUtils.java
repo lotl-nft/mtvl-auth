@@ -1,6 +1,7 @@
 package land.metadefi.utils;
 
 import io.smallrye.jwt.build.Jwt;
+import io.smallrye.jwt.build.JwtClaimsBuilder;
 import land.metadefi.AuthConfig;
 import land.metadefi.enumrable.UserRole;
 import land.metadefi.model.UserEntity;
@@ -16,21 +17,27 @@ import java.util.Optional;
 public class AuthUtils {
 
     public static String generateJwtToken(AuthConfig config, String kid, UserEntity userEntity) {
-        return Jwt.issuer(config.issuer())
-                .audience(Optional.of(userEntity.getId().toString()).orElse(""))
-                .upn(Optional.ofNullable(userEntity.getEmail()).orElse(""))
-                .preferredUserName(Optional.ofNullable(userEntity.getUsername()).orElse(""))
-                .groups(new HashSet<>(List.of(UserRole.USER.getValue())))
-                .claim(Claims.address.name(), Optional.ofNullable(userEntity.getContractAddress()).orElse(""))
-                .claim(Claims.kid.name(), kid)
-                .sign();
+        return jwtBuilder(kid, userEntity)
+            .issuer(config.issuerToken())
+            .sign();
     }
 
-    // TODO: JWT refresh token
     public static String generateJwtRefreshToken(AuthConfig config, String kid, UserEntity userEntity) {
-        return "";
+        return jwtBuilder(kid, userEntity)
+            .issuer(config.issuerRefreshToken())
+            .expiresIn(config.jwtRefreshToken())
+            .innerSign()
+            .encrypt();
     }
 
+    static JwtClaimsBuilder jwtBuilder(String kid, UserEntity userEntity) {
+        return Jwt.audience(Optional.of(userEntity.getId().toString()).orElse(""))
+            .upn(Optional.ofNullable(userEntity.getEmail()).orElse(""))
+            .preferredUserName(Optional.ofNullable(userEntity.getUsername()).orElse(""))
+            .groups(new HashSet<>(List.of(UserRole.USER.getValue())))
+            .claim(Claims.address.name(), Optional.ofNullable(userEntity.getContractAddress()).orElse(""))
+            .claim(Claims.kid.name(), kid);
+    }
 
     public static String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());

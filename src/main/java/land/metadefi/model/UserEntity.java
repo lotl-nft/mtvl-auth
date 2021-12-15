@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 
 @Getter
 @Setter
-@MongoEntity(collection="users")
+@MongoEntity(collection = "users")
 public class UserEntity {
     ObjectId id;
     String username;

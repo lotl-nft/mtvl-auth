@@ -1,5 +1,9 @@
 auth:
-  issuer: https://metadefi.land
+  issuer:
+    token: https://metadefi.land
+    refresh-token: https://auth.metadefi.land
+  jwt:
+    refresh-token: 84600
 smallrye:
   jwt:
     time-to-live: 3600
@@ -16,10 +20,10 @@ mp:
     verify:
       publickey:
         location: publicKey.pem
-      issuer: https://metadefi.land
-#    decrypt:
-#      key:
-#        location: privateKey.pem
+      issuer: https://auth.metadefi.land
+    decrypt:
+      key:
+        location: privateKey.pem
 quarkus:
   http:
     port: ${PORT:8080}

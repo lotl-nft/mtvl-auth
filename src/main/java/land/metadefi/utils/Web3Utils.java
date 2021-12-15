@@ -26,7 +26,7 @@ public class Web3Utils {
         }
 
         Sign.SignatureData sd =
-            new Sign.SignatureData (
+            new Sign.SignatureData(
                 v,
                 Arrays.copyOfRange(signatureBytes, 0, 32),
                 Arrays.copyOfRange(signatureBytes, 32, 64)

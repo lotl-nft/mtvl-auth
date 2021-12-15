@@ -35,7 +35,7 @@ public class AuthResource {
 
     @Query("renewToken")
     @Description("Retrieve the new JWT token using refresh token")
-    @RolesAllowed({ "User" })
+    @RolesAllowed({"User"})
     public Auth renewToken() {
         return repository.renewToken(address);
     }

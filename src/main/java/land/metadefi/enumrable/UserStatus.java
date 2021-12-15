@@ -10,15 +10,7 @@ public enum UserStatus {
     BLOCKED(2),
     ;
 
-    private final Integer status;
-
-    public Integer getStatus() { return this.status; }
-
     private static final Map<Integer, UserStatus> ENUM_MAP;
-
-    UserStatus(Integer status) {
-        this.status = status;
-    }
 
     static {
         Map<Integer, UserStatus> map = new ConcurrentHashMap<>();
@@ -28,7 +20,17 @@ public enum UserStatus {
         ENUM_MAP = Collections.unmodifiableMap(map);
     }
 
+    private final Integer status;
+
+    UserStatus(Integer status) {
+        this.status = status;
+    }
+
     public static UserStatus get(Integer status) {
         return ENUM_MAP.get(status);
+    }
+
+    public Integer getStatus() {
+        return this.status;
     }
 }

@@ -6,9 +6,11 @@ public enum UserRole {
 
     final String role;
 
-    public String getValue() { return this.role; }
-
     UserRole(String role) {
         this.role = role;
+    }
+
+    public String getValue() {
+        return this.role;
     }
 }

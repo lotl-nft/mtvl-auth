@@ -29,37 +29,37 @@ public class UserRepository implements PanacheMongoRepository<UserEntity> {
 
     public Auth authWithPassword(String username, String password) {
         UserEntity userEntity = find("username", username).firstResult();
-        if(Objects.isNull(userEntity))
+        if (Objects.isNull(userEntity))
             throw new CredentialsInvalidException();
-        if(!BCrypt.checkpw(password, userEntity.getPassword()))
+        if (!BCrypt.checkpw(password, userEntity.getPassword()))
             throw new CredentialsInvalidException();
-        if(!isActive(userEntity))
+        if (!isActive(userEntity))
             throw new UserInactiveException();
         return generateAuthResource(userEntity);
     }
 
     public Auth authWithMetamaskSignature(String address, String message, String signature) {
-        if(!AuthUtils.validateAddressFromMetamask(address, message, signature))
+        if (!AuthUtils.validateAddressFromMetamask(address, message, signature))
             throw new CredentialsInvalidException();
 
         UserEntity userEntity = find("contractAddress", address).firstResult();
-        if(Objects.isNull(userEntity)) {
+        if (Objects.isNull(userEntity)) {
             userEntity = new UserEntity();
             userEntity.setContractAddress(address);
             userEntity.setStatus(UserStatus.ACTIVE.getStatus());
             persist(userEntity);
         }
-        if(!isActive(userEntity))
+        if (!isActive(userEntity))
             throw new UserInactiveException();
         return generateAuthResource(userEntity);
     }
-    
+
     public Auth renewToken(String address) {
-        if(StringUtils.isEmpty(address))
+        if (StringUtils.isEmpty(address))
             throw new CredentialsInvalidException();
 
         UserEntity userEntity = find("contractAddress", address).firstResult();
-        if(!isActive(userEntity))
+        if (!isActive(userEntity))
             throw new UserInactiveException();
 
         return generateAuthResource(userEntity);
@@ -71,10 +71,8 @@ public class UserRepository implements PanacheMongoRepository<UserEntity> {
 
     private Auth generateAuthResource(UserEntity userEntity) {
         Auth auth = new Auth();
-        String token = AuthUtils.generateJwtToken(authConfig, kid, userEntity);
-        auth.setJwtToken(token);
-        // TODO: set refresh token
-        auth.setJwtRefreshToken(token);
+        auth.setJwtToken(AuthUtils.generateJwtToken(authConfig, kid, userEntity));
+        auth.setJwtRefreshToken(AuthUtils.generateJwtRefreshToken(authConfig, kid, userEntity));
         return auth;
     }
 }
