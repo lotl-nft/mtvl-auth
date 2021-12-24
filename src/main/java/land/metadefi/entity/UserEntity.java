@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 @MongoEntity(collection = "users")
 public class UserEntity {
     ObjectId id;
+    String gameId;
     String username;
     String password;
     String telegramId;
